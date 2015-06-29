@@ -9,6 +9,7 @@
   },
   "author": "Aleksis Brezas <abresas@resin.io>",
   "scripts": {
+    "pretest": "./node_modules/.bin/coffeelint ./index.coffee",
     "prepublish": "./node_modules/.bin/coffee -c index.coffee"
   },
   "license": "MIT",
@@ -18,6 +19,7 @@
     "middleware-handler": "~0.2.0"
   },
   "devDependencies": {
-    "coffee-script": "^1.9.3"
+    "coffee-script": "~1.9.3",
+    "coffeelint": "~1.10.1"
   }
 }
