@@ -1,0 +1,23 @@
+{
+  "name": "node-tunnel",
+  "version": "0.0.2",
+  "description": "Http tunneling proxy",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:resin-io/node-tunnel"
+  },
+  "author": "Aleksis Brezas <abresas@resin.io>",
+  "scripts": {
+    "prepublish": "./node_modules/.bin/coffee -c index.coffee"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "basic-auth-parser": "~0.0.2",
+    "bluebird": "^2.9.30",
+    "middleware-handler": "~0.2.0"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.9.3"
+  }
+}
