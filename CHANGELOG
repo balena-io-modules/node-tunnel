@@ -1,0 +1,3 @@
+v0.1.0
+
+* Send HTTP/1.0 200 message on success to support old nc versions.

@@ -10,7 +10,7 @@ MiddlewareHandler.prototype = Promise.promisifyAll(MiddlewareHandler.prototype)
 # Based on tunneling proxy code from https://nodejs.org/api/http.html
 connectSocket = (cltSocket, hostname, port, head) ->
 	srvSocket = net.connect port, hostname, ->
-		cltSocket.write 'HTTP/1.1 200 Connection Established\r\n\
+		cltSocket.write 'HTTP/1.0 200 Connection Established\r\n\
 				Proxy-agent: Resin-VPN\r\n\
 				\r\n'
 		srvSocket.write(head)
