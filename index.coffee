@@ -3,6 +3,7 @@ net = require 'net'
 url = require 'url'
 Promise = require 'bluebird'
 basicAuthParser = require 'basic-auth-parser'
+{ EventEmitter } = require 'events'
 MiddlewareHandler = require 'middleware-handler'
 MiddlewareHandler.prototype = Promise.promisifyAll(MiddlewareHandler.prototype)
 
@@ -31,6 +32,8 @@ connectSocket = (cltSocket, hostname, port, head) ->
 #
 # Middleware are functions of the form (request, controlSocket, head, next).
 exports.createTunnel = createTunnel = ->
+	tunnel = new EventEmitter()
+
 	middleware = new MiddlewareHandler()
 
 	server = http.createServer (req, res) ->
@@ -42,12 +45,14 @@ exports.createTunnel = createTunnel = ->
 		.then ->
 			srvUrl = url.parse("http://#{req.url}")
 			connectSocket(cltSocket, srvUrl.hostname, srvUrl.port, head)
+			.then ->
+				tunnel.emit('connect', srvUrl.hostname, srvUrl.port, head)
 		.catch (err) ->
+			tunnel.emit('error', err)
 			cltSocket.end()
 
-	tunnel =
-		use: middleware.use.bind(middleware)
-		listen: server.listen.bind(server)
+	tunnel.use = middleware.use.bind(middleware)
+	tunnel.listen = server.listen.bind(server)
 
 	return tunnel
 

@@ -1,6 +1,6 @@
 {
   "name": "node-tunnel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Http tunneling proxy",
   "main": "index.js",
   "repository": {
