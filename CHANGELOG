@@ -1,5 +1,6 @@
 v0.1.1
 * Emit connect/connected/error events for logging and error handling
+* Add "close" method for closing the tunnel.
 
 v0.1.0
 

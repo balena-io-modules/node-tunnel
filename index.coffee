@@ -53,6 +53,7 @@ exports.createTunnel = createTunnel = ->
 
 	tunnel.use = middleware.use.bind(middleware)
 	tunnel.listen = server.listen.bind(server)
+	tunnel.close = server.close.bind(server)
 
 	return tunnel
 
