@@ -1,6 +1,6 @@
 {
   "name": "node-tunnel",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Http tunneling proxy",
   "main": "index.js",
   "repository": {
@@ -10,6 +10,7 @@
   "author": "Aleksis Brezas <abresas@resin.io>",
   "scripts": {
     "pretest": "./node_modules/.bin/coffeelint ./index.coffee",
+    "test": "./node_modules/.bin/mocha --compilers coffee:coffee-script/register test/",
     "prepublish": "./node_modules/.bin/coffee -c index.coffee"
   },
   "license": "MIT",
@@ -19,7 +20,10 @@
     "middleware-handler": "~0.2.0"
   },
   "devDependencies": {
+    "chai": "^3.2.0",
     "coffee-script": "~1.9.3",
-    "coffeelint": "~1.10.1"
+    "coffeelint": "~1.10.1",
+    "mocha": "^2.3.0",
+    "request": "^2.61.0"
   }
 }
