@@ -18,10 +18,19 @@ connectSocket = (cltSocket, hostname, port, head) ->
 		srvSocket.pipe(cltSocket)
 		cltSocket.pipe(srvSocket)
 	new Promise (resolve, reject) ->
-		srvSocket.on('error', reject)
-		srvSocket.on('end', resolve)
+		cltSocket.on 'close', (had_error) ->
+			if had_error
+				reject()
+			else
+				resolve()
+
+		srvSocket.on 'close', (had_error) ->
+			if had_error
+				reject()
+			else
+				resolve()
 	.finally (e) ->
-		srvSocket.end()
+		srvSocket.destroy()
 
 # Create an http CONNECT tunneling proxy
 # Expressjs-like middleware can be used to change destination (by modifying req.url)
@@ -49,7 +58,7 @@ exports.createTunnel = createTunnel = ->
 				tunnel.emit('connect', srvUrl.hostname, srvUrl.port, head)
 		.catch (err) ->
 			tunnel.emit('error', err)
-			cltSocket.end()
+			cltSocket.destroy()
 
 	tunnel.use = middleware.use.bind(middleware)
 	tunnel.listen = server.listen.bind(server)
