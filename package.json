@@ -9,9 +9,9 @@
   },
   "author": "Aleksis Brezas <abresas@resin.io>",
   "scripts": {
-    "pretest": "./node_modules/.bin/coffeelint ./index.coffee",
-    "test": "./node_modules/.bin/mocha --compilers coffee:coffee-script/register test/",
-    "prepublish": "./node_modules/.bin/coffee -c index.coffee"
+    "pretest": "coffeelint ./index.coffee",
+    "test": "coffee -c index.coffee && mocha --compilers coffee:coffee-script/register test/",
+    "prepublish": "npm test"
   },
   "license": "MIT",
   "dependencies": {
