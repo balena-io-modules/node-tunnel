@@ -1,3 +1,4 @@
+* Handle exception when domain does not exist.
 * Made sure tests must pass in order to publish.
 * Made sure tests are run against latest code changes.
 

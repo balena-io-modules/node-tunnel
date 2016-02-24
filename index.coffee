@@ -17,18 +17,11 @@ connectSocket = (cltSocket, hostname, port, head) ->
 		srvSocket.write(head)
 		srvSocket.pipe(cltSocket)
 		cltSocket.pipe(srvSocket)
-	new Promise (resolve, reject) ->
-		cltSocket.on 'close', (had_error) ->
-			if had_error
-				reject()
-			else
-				resolve()
-
-		srvSocket.on 'close', (had_error) ->
-			if had_error
-				reject()
-			else
-				resolve()
+	Promise.fromNode (cb) ->
+		cltSocket.on('error', cb)
+		srvSocket.on('error', cb)
+		cltSocket.on('close', cb)
+		srvSocket.on('close', cb)
 	.finally (e) ->
 		srvSocket.destroy()
 
