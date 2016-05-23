@@ -15,15 +15,16 @@ connectSocket = (cltSocket, hostname, port, head) ->
 				Proxy-agent: Resin-VPN\r\n\
 				\r\n'
 		srvSocket.write(head)
-		srvSocket.pipe(cltSocket)
-		cltSocket.pipe(srvSocket)
+		srvSocket.pipe(cltSocket, end: false)
+		cltSocket.pipe(srvSocket, end: false)
 	Promise.fromNode (cb) ->
 		cltSocket.on('error', cb)
 		srvSocket.on('error', cb)
-		cltSocket.on('close', cb)
-		srvSocket.on('close', cb)
+		cltSocket.on('end', cb)
+		srvSocket.on('end', cb)
 	.finally (e) ->
 		srvSocket.destroy()
+		cltSocket.destroy()
 
 # Create an http CONNECT tunneling proxy
 # Expressjs-like middleware can be used to change destination (by modifying req.url)
