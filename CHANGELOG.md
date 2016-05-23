@@ -1,3 +1,7 @@
+# v0.2.2
+
+* Destroy both client<->tunnel and tunnel<->server sockets when either client or server sends a FIN packet
+
 # v0.2.1
 
 * Handle exception when domain does not exist.
