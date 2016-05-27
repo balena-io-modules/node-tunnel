@@ -1,15 +1,19 @@
-{ createTunnel } = require '../index'
+net = require 'net'
+nodeTunnel = require '../index'
 Promise = require 'bluebird'
 request = Promise.promisify(require('request'))
 
 { expect } = require 'chai'
 
-PORT = 8081
+PORT = 3128
 
 describe 'tunnel', ->
 	describe 'proxy', ->
+		# Sometimes connection takes a few seconds to be established and tests fail,
+		# so set a generous timeout here.
+		@timeout(10000)
 		before (done) ->
-			@tunnel = createTunnel()
+			@tunnel = nodeTunnel.createTunnel()
 			@tunnel.listen(PORT, done)
 
 		after ->
@@ -33,7 +37,7 @@ describe 'tunnel', ->
 		@timeout(60000)
 
 		before (done) ->
-			@tunnel = createTunnel()
+			@tunnel = nodeTunnel.createTunnel()
 			@events = []
 			@tunnel.on 'connect', =>
 				@events.push
@@ -80,3 +84,52 @@ describe 'tunnel', ->
 				expect(@events[0]).to.have.property('name').that.equals('error')
 				expect(@events[0]).to.have.deep.property('data[0]').that.is.instanceof(Error)
 				done()
+
+	describe 'half-close connections between tunnel and server', ->
+		# The test server listening on 8080 does not send a FIN packet back when it receives
+		# one from VPN tunnel (allowHalfOpen setting). The VPN tunnel should anyway close the
+		# connection fully from its side, or else the connection it will remain bound, indefinitely,
+		# to the node process with a FIN_WAIT_2 state, therefore wasting resources.
+		#
+		# If the timeout is hit during tests then the VPN tunnel can potentially leak connections.
+		@timeout(5000)
+
+		# tunnel <-> server connection socket
+		sock = null
+		serverPort = 8080
+
+		beforeEach (done) ->
+			nodeTunnel.connect = (args...) ->
+				sock = net.connect(args...)
+				return sock
+
+			@tunnel = nodeTunnel.createTunnel()
+			@tunnel.listen(PORT, done)
+
+		afterEach ->
+			nodeTunnel.connect = net.connect
+			@tunnel.close()
+			@server.close()
+
+		it 'should be fully closed when client sends FIN', (done) ->
+			@server = net.createServer allowHalfOpen: true, (socket) ->
+				# tunnel <-> server connection properly closed from the tunnel side
+				sock.on('close', done)
+
+			@server.listen serverPort, ->
+				socket = net.createConnection PORT, ->
+					socket.write "CONNECT localhost:#{serverPort} HTTP/1.0\r\nHost: localhost:#{serverPort}\r\n\r\n"
+					socket.on 'data', (data) ->
+						# send FIN to tunnel server
+						socket.end()
+
+		it 'should be fully closed when server sends FIN', (done) ->
+			@server = net.createServer allowHalfOpen: true, (socket) ->
+				# tunnel <-> server connection properly closed from the tunnel side
+				sock.on('close', done)
+
+				# send FIN to tunnel server
+				socket.end()
+			@server.listen serverPort, ->
+				socket = net.createConnection PORT, ->
+					socket.write "CONNECT localhost:#{serverPort} HTTP/1.0\r\nHost: localhost:#{serverPort}\r\n\r\n"
