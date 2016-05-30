@@ -1,3 +1,5 @@
+* Add tests for half-closed connections
+
 # v0.2.2
 
 * Destroy both client<->tunnel and tunnel<->server sockets when either client or server sends a FIN packet

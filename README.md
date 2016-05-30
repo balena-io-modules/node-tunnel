@@ -24,6 +24,7 @@ Documentation
   * [.use( function(req, cltSocket, head, next) )](#tunnel.use)
   * [.listen(port)](#tunnel.listen)
 * [basicAuth(req, cltSocket, head, next)](#basic_auth)
+* [connect()](#connect)
 
 <a name="create_tunnel"></a>
 ### createTunnel() = <code>Tunnel</code>
@@ -92,7 +93,7 @@ tunnel.listen(3128, function() {
 });
 ```
 
-<a name="module_token.has"></a>
+<a name="basic_auth"></a>
 ### basicAuth(req, cltSocket, head, next)
 Parses Proxy-Authorization header and sets req.auth.username and req.auth.password properties.
 
@@ -115,6 +116,10 @@ tunnel.listen(3128, function() {
 	console.log("Tunnel listening on port 3128");
 });
 ```
+
+<a name="connect"></a>
+### connect()
+Synchronous function that creates a connection between the tunnel and the target server. It defaults to `net.connect` and returns a `net.Socket`
 
 Support
 -------
