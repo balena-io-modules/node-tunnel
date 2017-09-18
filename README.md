@@ -21,10 +21,10 @@ Documentation
 
 * [createTunnel()](#create_tunnel) = <code>Tunnel</code>
 * [Tunnel](#tunnel)
+  * [.connect(port, host, client, req)](#tunnel.connect)
   * [.use( function(req, cltSocket, head, next) )](#tunnel.use)
   * [.listen(port)](#tunnel.listen)
 * [basicAuth(req, cltSocket, head, next)](#basic_auth)
-* [connect()](#connect)
 
 <a name="create_tunnel"></a>
 ### createTunnel() = <code>Tunnel</code>
@@ -52,6 +52,25 @@ request( { url: "http://google.com", "proxy": "http://localhost:3128", tunnel: t
 
 <a name="tunnel"></a>
 ### Tunnel
+
+<a name="tunnel.connect"></a>
+### Tunnel.connect(port, host, client, req)
+Function that creates a connection between the tunnel and the target server.
+It defaults to `Promise.method(net.connect)` which returns `Promise<net.Socket>`.
+
+**Kind**: method of <code>[Tunnel](#tunnel)</code>  
+**Summary**: Establish the upstream connection.  
+**Access:** public  
+
+**Example**
+```js
+// Create a tunnel with a custom connect method
+tunnel = createTunnel()
+tunnel.connect = (port, host, client, req) => {
+  console.log(`Establishing tunnel to ${host}:${port}...`);
+  return Promise.method(net.connect);
+};
+```
 
 <a name="tunnel.use"></a>
 ### Tunnel.use( function(req, cltSocket, head, next) ) 
@@ -116,10 +135,6 @@ tunnel.listen(3128, function() {
 	console.log("Tunnel listening on port 3128");
 });
 ```
-
-<a name="connect"></a>
-### connect()
-Synchronous function that creates a connection between the tunnel and the target server. It defaults to `net.connect` and returns a `net.Socket`
 
 Support
 -------

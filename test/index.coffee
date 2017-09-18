@@ -63,7 +63,6 @@ describe 'tunnel', ->
 			request(opts)
 			.delay(500)
 			.then =>
-
 				expect(@events.length).to.equal(1)
 				expect(@events[0]).to.have.property('name').that.equals('connect')
 				expect(@events[0]).to.have.deep.property('data[0]').that.equal('api.resin.io')
@@ -97,17 +96,20 @@ describe 'tunnel', ->
 		# tunnel <-> server connection socket
 		sock = null
 		serverPort = 8080
+		connectStr = "CONNECT localhost:#{serverPort} HTTP/1.0\r\nHost: localhost:#{serverPort}\r\n\r\n"
 
 		beforeEach (done) ->
-			nodeTunnel.connect = (args...) ->
-				sock = net.connect(args...)
-				return sock
-
 			@tunnel = nodeTunnel.createTunnel()
+			@tunnel.connect = (port, host) ->
+				sock = net.connect(port, host)
+				new Promise (resolve, reject) ->
+					sock
+					.on('connect', resolve)
+					.on('error', reject)
+				.return(sock)
 			@tunnel.listen(PORT, done)
 
 		afterEach ->
-			nodeTunnel.connect = net.connect
 			@tunnel.close()
 			@server.close()
 
@@ -118,7 +120,7 @@ describe 'tunnel', ->
 
 			@server.listen serverPort, ->
 				socket = net.createConnection PORT, ->
-					socket.write "CONNECT localhost:#{serverPort} HTTP/1.0\r\nHost: localhost:#{serverPort}\r\n\r\n"
+					socket.write(connectStr)
 					socket.on 'data', (data) ->
 						# send FIN to tunnel server
 						socket.end()
@@ -127,9 +129,9 @@ describe 'tunnel', ->
 			@server = net.createServer allowHalfOpen: true, (socket) ->
 				# tunnel <-> server connection properly closed from the tunnel side
 				sock.on('close', done)
-
 				# send FIN to tunnel server
 				socket.end()
+
 			@server.listen serverPort, ->
 				socket = net.createConnection PORT, ->
-					socket.write "CONNECT localhost:#{serverPort} HTTP/1.0\r\nHost: localhost:#{serverPort}\r\n\r\n"
+					socket.write(connectStr)
