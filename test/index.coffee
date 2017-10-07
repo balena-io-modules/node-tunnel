@@ -1,7 +1,7 @@
 net = require 'net'
 nodeTunnel = require '../index'
 Promise = require 'bluebird'
-request = Promise.promisify(require('request'))
+request = Promise.promisify(require('request'), multiArgs: true)
 
 { expect } = require 'chai'
 

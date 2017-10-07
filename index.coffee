@@ -25,10 +25,9 @@ connectSocket = ({ cltSocket, hostname, port, head, connect, req }) ->
 		.finally ->
 			srvSocket.destroy()
 			cltSocket.destroy()
-	.catch (e) ->
+	.tapCatch ->
 		cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n')
 		cltSocket.destroy()
-		throw e
 
 # Create an http CONNECT tunneling proxy
 # Expressjs-like middleware can be used to change destination (by modifying req.url)
