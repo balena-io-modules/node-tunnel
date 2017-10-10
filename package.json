@@ -9,6 +9,7 @@
   },
   "author": "Aleksis Brezas <abresas@resin.io>",
   "scripts": {
+    "ci": "npm test && catch-uncommitted",
     "pretest": "coffeelint ./index.coffee",
     "test": "coffee -c index.coffee && mocha --compilers coffee:coffee-script/register test/",
     "prepublish": "npm test"
@@ -20,6 +21,7 @@
     "middleware-handler": "^0.2.0"
   },
   "devDependencies": {
+    "catch-uncommitted": "^1.0.0",
     "chai": "^3.5.0",
     "coffee-script": "^1.12.7",
     "coffeelint": "^1.16.0",
