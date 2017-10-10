@@ -39,10 +39,9 @@
         srvSocket.destroy();
         return cltSocket.destroy();
       });
-    })["catch"](function(e) {
+    }).tapCatch(function() {
       cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n');
-      cltSocket.destroy();
-      throw e;
+      return cltSocket.destroy();
     });
   };
 
