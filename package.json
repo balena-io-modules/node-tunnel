@@ -1,6 +1,6 @@
 {
   "name": "node-tunnel",
-  "version": "0.2.3",
+  "version": "1.0.0",
   "description": "Http tunneling proxy",
   "main": "index.js",
   "repository": {
@@ -15,15 +15,15 @@
   },
   "license": "MIT",
   "dependencies": {
-    "basic-auth-parser": "~0.0.2",
-    "bluebird": "^2.9.30",
-    "middleware-handler": "~0.2.0"
+    "basic-auth-parser": "0.0.2",
+    "bluebird": "^3.5.1",
+    "middleware-handler": "^0.2.0"
   },
   "devDependencies": {
-    "chai": "^3.2.0",
-    "coffee-script": "~1.9.3",
-    "coffeelint": "~1.10.1",
-    "mocha": "^2.3.0",
-    "request": "^2.61.0"
+    "chai": "^3.5.0",
+    "coffee-script": "^1.12.7",
+    "coffeelint": "^1.16.0",
+    "mocha": "^2.5.3",
+    "request": "^2.83.0"
   }
 }

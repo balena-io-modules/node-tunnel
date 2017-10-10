@@ -7,26 +7,26 @@ basicAuthParser = require 'basic-auth-parser'
 MiddlewareHandler = require 'middleware-handler'
 MiddlewareHandler.prototype = Promise.promisifyAll(MiddlewareHandler.prototype)
 
-# Simplify testing
-exports.connect = net.connect
-
 # Connect an http socket to another tcp server.
 # Based on tunneling proxy code from https://nodejs.org/api/http.html
-connectSocket = (cltSocket, hostname, port, head) ->
-	srvSocket = exports.connect port, hostname, ->
-		cltSocket.write 'HTTP/1.0 200 Connection Established\r\n\
-				Proxy-agent: Resin-VPN\r\n\
-				\r\n'
+connectSocket = ({ cltSocket, hostname, port, head, connect, req }) ->
+	connect(port, hostname, cltSocket, req)
+	.then (srvSocket) ->
+		cltSocket.write('HTTP/1.0 200 Connection Established\r\nProxy-agent: Resin-VPN\r\n\r\n')
 		srvSocket.write(head)
 		srvSocket.pipe(cltSocket, end: false)
 		cltSocket.pipe(srvSocket, end: false)
-	Promise.fromNode (cb) ->
-		cltSocket.on('error', cb)
-		srvSocket.on('error', cb)
-		cltSocket.on('end', cb)
-		srvSocket.on('end', cb)
-	.finally (e) ->
-		srvSocket.destroy()
+
+		Promise.fromNode (cb) ->
+			cltSocket.on('error', cb)
+			srvSocket.on('error', cb)
+			cltSocket.on('end', cb)
+			srvSocket.on('end', cb)
+		.finally ->
+			srvSocket.destroy()
+			cltSocket.destroy()
+	.tapCatch ->
+		cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n')
 		cltSocket.destroy()
 
 # Create an http CONNECT tunneling proxy
@@ -37,7 +37,7 @@ connectSocket = (cltSocket, hostname, port, head) ->
 # and "use" for adding middleware.
 #
 # Middleware are functions of the form (request, controlSocket, head, next).
-exports.createTunnel = createTunnel = ->
+exports.createTunnel = ->
 	tunnel = new EventEmitter()
 
 	middleware = new MiddlewareHandler()
@@ -50,13 +50,20 @@ exports.createTunnel = createTunnel = ->
 		middleware.handleAsync([ req, cltSocket, head ])
 		.then ->
 			srvUrl = url.parse("http://#{req.url}")
-			connectSocket(cltSocket, srvUrl.hostname, srvUrl.port, head)
+			connectSocket
+				cltSocket: cltSocket
+				hostname: srvUrl.hostname
+				port: srvUrl.port
+				head: head
+				connect: tunnel.connect
+				req: req
 			.then ->
 				tunnel.emit('connect', srvUrl.hostname, srvUrl.port, head)
 		.catch (err) ->
 			tunnel.emit('error', err)
 			cltSocket.destroy()
 
+	tunnel.connect = Promise.method(net.connect)
 	tunnel.use = middleware.use.bind(middleware)
 	tunnel.listen = server.listen.bind(server)
 	tunnel.close = server.close.bind(server)
@@ -64,7 +71,7 @@ exports.createTunnel = createTunnel = ->
 	return tunnel
 
 # Proxy authorization middleware for http tunnel.
-exports.basicAuth = basicAuth = (req, cltSocket, head, next) ->
+exports.basicAuth = (req, cltSocket, head, next) ->
 	if req.headers['proxy-authorization']?
 		req.auth = basicAuthParser(req.headers['proxy-authorization'])
 	next()
