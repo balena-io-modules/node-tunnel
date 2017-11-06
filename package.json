@@ -1,8 +1,9 @@
 {
   "name": "node-tunnel",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Http tunneling proxy",
   "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git@github.com:resin-io/node-tunnel"
@@ -16,6 +17,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/bluebird": "^3.5.18",
+    "@types/node": "^8.0.47",
     "basic-auth-parser": "0.0.2",
     "bluebird": "^3.5.1",
     "middleware-handler": "^0.2.0"
