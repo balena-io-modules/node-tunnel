@@ -19,36 +19,11 @@ Documentation
 -------------
 
 
-* [createTunnel()](#create_tunnel) = <code>Tunnel</code>
 * [Tunnel](#tunnel)
   * [.connect(port, host, client, req)](#tunnel.connect)
   * [.use( function(req, cltSocket, head, next) )](#tunnel.use)
   * [.listen(port)](#tunnel.listen)
 * [basicAuth(req, cltSocket, head, next)](#basic_auth)
-
-<a name="create_tunnel"></a>
-### createTunnel() = <code>Tunnel</code>
-Create an HTTP tunneling proxy. The returned object has methods **use** and **listen**.
-
-By default the proxy allows connections to any host and port, without authentication.
-
-**Kind**: static method of <code>[node-tunnel](#module_token)</code>  
-**Summary**: Create a tunneling proxy.  
-**Returns**: <code>Tunnel object</code>  
-**Access:** public  
-
-**Example**  
-```js
-// Start a tunneling proxy on port 3128
-tunnel = createTunnel()
-tunnel.listen(3128)
-
-// Use node "request" library to do an http request through the tunnel.
-// Note the "tunnel" parameter set to true.
-request( { url: "http://google.com", "proxy": "http://localhost:3128", tunnel: true}, function( err, response ) {
-	console.log('response body', response.body);
-} );
-```
 
 <a name="tunnel"></a>
 ### Tunnel
@@ -65,7 +40,7 @@ It defaults to `Promise.method(net.connect)` which returns `Promise<net.Socket>`
 **Example**
 ```js
 // Create a tunnel with a custom connect method
-tunnel = createTunnel()
+tunnel = new Tunnel();
 tunnel.connect = (port, host, client, req) => {
   console.log(`Establishing tunnel to ${host}:${port}...`);
   return Promise.method(net.connect);
@@ -89,7 +64,7 @@ Keep in mind that express middleware do not work with in conjunction with this m
 **Example**  
 ```js
 // Start a tunneling proxy on port 3128
-tunnel = createTunnel()
+tunnel = new Tunnel();
 tunnel.use( function(req, cltSocket, head, next) {
 	// Send all connections to port 80 of localhost.
 	req.url = "http://localhost:80";
@@ -106,7 +81,7 @@ Start listening on the given port. An optional callback function is called when 
 **Access:** public  
 **Example**  
 ```js
-tunnel = createTunnel()
+tunnel = new Tunnel();
 tunnel.listen(3128, function() {
 	console.log("Tunnel listening on port 3128");
 });
@@ -122,7 +97,7 @@ Further middleware should be added to accept or reject connections based on this
 **Access:** public  
 **Example**  
 ```js
-tunnel = createTunnel()
+tunnel = new Tunnel();
 tunnel.use(basicAuth);
 tunnel.use( function(req, cltSocket, head, next) {
 	if (req.auth.username != "user" || req.auth.password != "password") {
