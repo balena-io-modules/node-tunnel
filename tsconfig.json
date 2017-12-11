@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"outDir": "lib",
+		"target": "ES6",
+		"noImplicitAny": true,
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"preserveConstEnums": true,
+		"removeComments": true,
+		"sourceMap": false,
+		"strictNullChecks": true
+	},
+	"include": [
+		"src/**/*.ts",
+		"test/**/*.ts",
+		"typings/**/*.d.ts"
+	]
+}
+
