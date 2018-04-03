@@ -54,13 +54,13 @@ describe('tunnel', function() {
 		before(function(done) {
 			this.tunnel = new nodeTunnel.Tunnel();
 			this.events = [];
-			this.tunnel.on('connect', function() {
+			this.tunnel.on('connect', function(this: any) {
 				return this.events.push({
 					name: 'connect',
 					data: arguments,
 				});
 			}.bind(this));
-			this.tunnel.on('error', function() {
+			this.tunnel.on('error', function(this: any) {
 				return this.events.push({
 					name: 'error',
 					data: arguments,
