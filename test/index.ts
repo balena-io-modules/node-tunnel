@@ -30,18 +30,17 @@ describe('tunnel', function() {
 			return this.tunnel.close();
 		});
 
-		return it('should proxy http requests', function(done) {
+		return it('should proxy http requests', function() {
 			const opts = {
 				url: 'https://api.resin.io/ping',
 				proxy: `http://localhost:${PORT}`,
 				tunnel: true,
 			};
 
-			request.get(opts)
+			return request.get(opts)
 			.then((res) => {
 				expect(res.statusCode).to.equal(200);
 				expect(res.body).to.equal('OK');
-				done();
 			});
 		});
 	});
@@ -54,18 +53,16 @@ describe('tunnel', function() {
 		before(function(done) {
 			this.tunnel = new nodeTunnel.Tunnel();
 			this.events = [];
-			this.tunnel.on('connect', function(this: any) {
-				return this.events.push({
+			this.tunnel.on('connect', (...args: any[]) =>
+				this.events.push({
 					name: 'connect',
-					data: arguments,
-				});
-			}.bind(this));
-			this.tunnel.on('error', function(this: any) {
-				return this.events.push({
+					data: args,
+				}));
+			this.tunnel.on('error', (...args: any[]) =>
+				this.events.push({
 					name: 'error',
-					data: arguments,
-				});
-			}.bind(this));
+					data: args,
+				}));
 			return this.tunnel.listen(PORT, done);
 		});
 
@@ -73,7 +70,7 @@ describe('tunnel', function() {
 			return this.tunnel.close();
 		});
 
-		it('should generate connect event on success', function(done) {
+		it('should generate connect event on success', function() {
 			this.events = [];
 
 			const opts = {
@@ -82,7 +79,7 @@ describe('tunnel', function() {
 				tunnel: true,
 			};
 
-			request(opts)
+			return request(opts)
 			.promise()
 			.delay(500)
 			.then(() => {
@@ -90,11 +87,10 @@ describe('tunnel', function() {
 				expect(this.events[0]).to.have.property('name').that.equals('connect');
 				expect(this.events[0]).to.have.deep.property('data[0]').that.equal('api.resin.io');
 				expect(this.events[0]).to.have.deep.property('data[1]').that.equal('443');
-				done();
 			});
 		});
 
-		return it('should generate connect and error events on error', function(done) {
+		return it('should generate connect and error events on error', function() {
 			this.events = [];
 
 			const opts = {
@@ -103,12 +99,11 @@ describe('tunnel', function() {
 				tunnel: true,
 			};
 
-			request(opts)
+			return request(opts)
 			.catch(() => {
 				expect(this.events.length).to.equal(1);
 				expect(this.events[0]).to.have.property('name').that.equals('error');
 				expect(this.events[0]).to.have.deep.property('data[0]').that.is.instanceof(Error);
-				done();
 			});
 		});
 	});
@@ -129,13 +124,13 @@ describe('tunnel', function() {
 
 		beforeEach(function(done) {
 			this.tunnel = new nodeTunnel.Tunnel();
-			this.tunnel.connect = function(port: number, host: string) {
+			this.tunnel.connect = (port: number, host: string) => {
 				sock = net.connect(port, host);
-				return new Promise(function(resolve, reject) {
-					return sock
+				return new Promise((resolve, reject) =>
+					sock
 					.on('connect', resolve)
-					.on('error', reject);
-				}).return(sock);
+					.on('error', reject))
+				.return(sock);
 			};
 			this.tunnel.listen(PORT, done);
 		});
@@ -146,35 +141,35 @@ describe('tunnel', function() {
 		});
 
 		it('should be fully closed when client sends FIN', function(done) {
-			this.server = net.createServer({allowHalfOpen: true}, _socket =>
+			this.server = net.createServer({allowHalfOpen: true}, () =>
 				// tunnel <-> server connection properly closed from the tunnel side
 				sock.on('close', done)
 			);
 
-			this.server.listen(serverPort, function() {
-				let socket: net.Socket;
-				socket = net.createConnection(PORT, function() {
-					socket.write(connectStr);
-					socket.on('data', _data =>
+			this.server.listen(serverPort, () => {
+				net.createConnection(PORT, function(this: net.Socket) {
+					this.write(connectStr);
+					this.on('data', () =>
 						// send FIN to tunnel server
-						socket.end()
+						this.end()
 					);
 				});
 			});
 		});
 
 		it('should be fully closed when server sends FIN', function(done) {
-			this.server = net.createServer({allowHalfOpen: true}, function(socket) {
+			this.server = net.createServer({allowHalfOpen: true}, (socket) => {
 				// tunnel <-> server connection properly closed from the tunnel side
 				sock.on('close', done);
 				// send FIN to tunnel server
 				socket.end();
 			});
 
-			this.server.listen(serverPort, function() {
-				let socket: net.Socket;
-				socket = net.createConnection(PORT, () => socket.write(connectStr));
-			});
+			this.server.listen(serverPort, () =>
+				net.createConnection(PORT, function(this: net.Socket) {
+					this.write(connectStr);
+				})
+			);
 		});
 	});
 });
