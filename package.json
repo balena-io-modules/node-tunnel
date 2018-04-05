@@ -13,7 +13,8 @@
     "lint": "tslint --format stylish --project .",
     "lintfix": "tslint --fix --format stylish --project .",
     "build": "tsc --pretty --project ./tsconfig.dist.json",
-    "test": "mocha --compilers ts:ts-node/register test/"
+    "test": "mocha --compilers ts:ts-node/register test/",
+    "prepare": "npm run build"
   },
   "license": "MIT",
   "dependencies": {

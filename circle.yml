@@ -12,9 +12,6 @@ buildSteps: &buildSteps
   - run:
       name: Test
       command: npm test
-  - run:
-      name: Build
-      command: npm run build
   - persist_to_workspace:
       # Persist all job output, so we can (potentially) use it for deploys
       root: ../
