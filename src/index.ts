@@ -11,8 +11,6 @@ interface MiddlewareHandlerAsync extends MiddlewareHandler {
 }
 MiddlewareHandler.prototype = Promise.promisifyAll(MiddlewareHandler.prototype) as MiddlewareHandlerAsync;
 
-// Connect an http socket to another tcp server.
-// Based on tunneling proxy code from https://nodejs.org/api/http.html
 export type NetConnectPromise = (port: number, hostname: string, cltSocket: net.Socket, req: Request) => Promise<net.Socket>;
 
 interface ConnectSocketOptions {
@@ -24,6 +22,8 @@ interface ConnectSocketOptions {
 	req: Request;
 }
 
+// Connect an http socket to another tcp server.
+// Based on tunneling proxy code from https://nodejs.org/api/http.html
 const connectSocket = ({ cltSocket, hostname, port, head, connect, req }: ConnectSocketOptions) =>
 	connect(port, hostname, cltSocket, req)
 	.then((srvSocket) => {
