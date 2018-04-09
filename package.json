@@ -9,11 +9,14 @@
     "url": "git@github.com:resin-io/node-tunnel"
   },
   "author": "Aleksis Brezas <abresas@resin.io>",
+  "contributors": [
+    "Will Boyce <will@resin.io>"
+  ],
   "scripts": {
     "lint": "tslint --format stylish --project .",
     "lintfix": "tslint --fix --format stylish --project .",
     "build": "tsc --pretty --project ./tsconfig.dist.json",
-    "test": "mocha --compilers ts:ts-node/register test/",
+    "test": "mocha --compilers ts:ts-node/register/type-check test/",
     "prepare": "npm run build"
   },
   "license": "MIT",
