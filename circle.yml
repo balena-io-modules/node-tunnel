@@ -34,7 +34,7 @@ jobs:
   deploy:
     # For this to work NPM_TOKEN must be set for the account used for publishing
     docker:
-      - image: circleci/node:6
+      - image: circleci/node:8
     steps:
       - attach_workspace:
           at: $CIRCLE_WORKING_DIRECTORY
