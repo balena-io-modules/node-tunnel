@@ -4,15 +4,13 @@
 		"outDir": "lib",
 		"target": "ES6",
 		"declaration": true,
+		"sourceMap": true,
+		"removeComments": true,
 		"strict": true,
 		"noErrorTruncation": true,
-		"noImplicitAny": true,
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
 		"preserveConstEnums": true,
-		"removeComments": true,
-		"sourceMap": false,
-		"strictNullChecks": true,
 		"allowJs": false
 	},
 	"include": [

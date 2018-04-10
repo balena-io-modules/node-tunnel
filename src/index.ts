@@ -105,7 +105,7 @@ export class Tunnel extends EventEmitter {
 		});
 	}
 	use: (middleware: Middleware) => void = this.middleware.use.bind(this.middleware);
-	listen: (port: string, callback?: (err: any, result?: any) => void) => this = this.server.listen.bind(this.server);
+	listen: (port: number | string, callback?: (err: any, result?: any) => void) => this = this.server.listen.bind(this.server);
 	close: (callback?: (error?: Error) => void) => this = this.server.close.bind(this.server);
 }
 
