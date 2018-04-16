@@ -1,6 +1,6 @@
 {
   "name": "node-tunnel",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Http tunneling proxy",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "test": "mocha --compilers ts:ts-node/register/type-check test/",
     "prepare": "npm run build"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "basic-auth-parser": "0.0.2",
     "bluebird": "^3.5.1",
