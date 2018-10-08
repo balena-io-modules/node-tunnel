@@ -100,8 +100,11 @@ describe('tunnel', function() {
 			.then(() => {
 				expect(this.events.length).to.equal(1);
 				expect(this.events[0]).to.have.property('name').that.equals('connect');
-				expect(this.events[0]).to.have.deep.property('data[0]').that.equal('api.resin.io');
-				expect(this.events[0]).to.have.deep.property('data[1]').that.equal('443');
+				expect(this.events[0]).to.have.property('data');
+				expect(this.events[0].data.length).to.equal(3);
+				expect(this.events[0].data[0]).to.equal('api.resin.io');
+				expect(this.events[0].data[1]).to.equal('443');
+				expect(this.events[0].data[2]).to.be.instanceof(Buffer);
 			});
 		});
 
@@ -118,7 +121,9 @@ describe('tunnel', function() {
 			.catch(() => {
 				expect(this.events.length).to.equal(1);
 				expect(this.events[0]).to.have.property('name').that.equals('error');
-				expect(this.events[0]).to.have.deep.property('data[0]').that.is.instanceof(Error);
+				expect(this.events[0]).to.have.property('data');
+				expect(this.events[0].data.length).to.equal(1);
+				expect(this.events[0].data[0]).to.be.instanceof(Error);
 			});
 		});
 	});

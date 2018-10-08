@@ -11,7 +11,8 @@
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
 		"preserveConstEnums": true,
-		"allowJs": false
+		"allowJs": false,
+		"typeRoots" : ["./node_modules/@types", "./typings"]
 	},
 	"include": [
 		"src/**/*.ts",
