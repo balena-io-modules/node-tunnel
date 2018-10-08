@@ -1,6 +1,6 @@
 {
   "name": "node-tunnel",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Http tunneling proxy",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
