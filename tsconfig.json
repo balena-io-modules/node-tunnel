@@ -12,7 +12,8 @@
 		"noUnusedLocals": true,
 		"preserveConstEnums": true,
 		"allowJs": false,
-		"typeRoots" : ["./node_modules/@types", "./typings"]
+		"typeRoots" : ["./node_modules/@types", "./typings"],
+		"resolveJsonModule": true
 	},
 	"include": [
 		"src/**/*.ts",

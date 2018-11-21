@@ -20,6 +20,8 @@ import * as http from 'http';
 import * as net from 'net';
 import * as url from 'url';
 
+import { version } from '../package.json'
+
 export type Middleware = (req: Request, cltSocket: net.Socket, head: Buffer, next: () => void) => void;
 
 export type NetConnectPromise = (port: number, hostname: string, cltSocket: net.Socket, req: Request) => Promise<net.Socket>;
@@ -38,7 +40,7 @@ interface ConnectSocketOptions {
 const connectSocket = ({ cltSocket, hostname, port, head, connect, req }: ConnectSocketOptions) =>
 	connect(port, hostname, cltSocket, req)
 	.then((srvSocket) => {
-		cltSocket.write('HTTP/1.0 200 Connection Established\r\nProxy-agent: Resin-VPN\r\n\r\n');
+		cltSocket.write(`HTTP/1.0 200 Connection Established\r\nProxy-agent: balena-io/node-tunnel (v${version})\r\n\r\n`);
 		srvSocket.write(head);
 		srvSocket.pipe(cltSocket, {end: false});
 		cltSocket.pipe(srvSocket, {end: false});
@@ -52,9 +54,14 @@ const connectSocket = ({ cltSocket, hostname, port, head, connect, req }: Connec
 			srvSocket.destroy();
 			cltSocket.destroy();
 		});
-	}).tapCatch(() => {
-		cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n');
-		cltSocket.destroy();
+	})
+	.tapCatch(() => {
+		if (cltSocket.writable) {
+			cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n');
+		}
+		if (!cltSocket.destroyed) {
+			cltSocket.destroy();
+		}
 	});
 
 // Create an http CONNECT tunneling proxy
@@ -101,7 +108,8 @@ export class Tunnel extends EventEmitter {
 				.then(() =>
 					this.emit('connect', hostname, port, head)
 				);
-			}).catch((err: Error) => {
+			})
+			.catch((err: Error) => {
 				this.emit('error', err);
 				cltSocket.destroy();
 			})

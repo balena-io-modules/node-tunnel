@@ -2,8 +2,8 @@
   "name": "node-tunnel",
   "version": "2.0.0",
   "description": "Http tunneling proxy",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/src/index.js",
+  "types": "lib/src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git@github.com:resin-io/node-tunnel"
