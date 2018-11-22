@@ -13,7 +13,8 @@
     "Will Boyce <will@resin.io>"
   ],
   "scripts": {
-    "lint": "resin-lint --typescript --no-prettier src test",
+    "lint": "resin-lint --typescript src/ test/ typings/",
+    "lint:fix": "prettier --config ./node_modules/resin-lint/config/.prettierrc --write {src,test,typings}/*.ts {src,test,typings}/**/*.ts",
     "check": "tsc --pretty --noEmit --diagnostics --project .",
     "build": "tsc --pretty --project ./tsconfig.dist.json",
     "test": "mocha --require ts-node/register/type-check test/index.ts",
@@ -32,6 +33,8 @@
     "@types/node": "^8.10.38",
     "@types/request-promise": "^4.1.42",
     "chai": "^4.2.0",
+    "husky": "^1.2.0",
+    "lint-staged": "^8.1.0",
     "mocha": "^5.2.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
@@ -39,5 +42,18 @@
     "resin-lint": "^2.0.1",
     "ts-node": "^6.2.0",
     "typescript": "^3.1.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run lint"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --config ./node_modules/resin-lint/config/.prettierrc --write",
+      "resin-lint --typescript --no-prettier",
+      "git add"
+    ]
   }
 }
