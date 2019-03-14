@@ -149,10 +149,7 @@ describe('tunnel', function() {
 		beforeEach(function(done) {
 			this.tunnel = new nodeTunnel.Tunnel();
 			this.tunnel.connect = (port: number, host: string) => {
-				sock = net.connect(
-					port,
-					host,
-				);
+				sock = net.connect(port, host);
 				return new Promise((resolve, reject) =>
 					sock.on('connect', resolve).on('error', reject),
 				).return(sock);
