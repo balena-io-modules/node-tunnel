@@ -2,7 +2,7 @@ node-tunnel
 -----------
 
 [![npm version](https://badge.fury.io/js/node-tunnel.svg)](http://npmjs.org/package/node-tunnel)
-[![dependencies](https://david-dm.org/resin-io/node-tunnel.png)](https://david-dm.org/resin-io/node-tunnel.png)
+[![dependencies](https://david-dm.org/balena-io/node-tunnel.png)](https://david-dm.org/balena-io/node-tunnel.png)
 
 HTTP tunneling proxy library.
 
@@ -114,7 +114,7 @@ tunnel.listen(3128, function() {
 Support
 -------
 
-If you're having any problem, please [raise an issue](https://github.com/resin-io/node-tunnel/issues/new) on GitHub and the Resin.io team will be happy to help.
+If you're having any problem, please [raise an issue](https://github.com/balena-io/node-tunnel/issues/new) on GitHub and the Balena team will be happy to help.
 
 Tests
 -----
@@ -128,8 +128,8 @@ $ npm install && npm test
 Contribute
 ----------
 
-- Issue Tracker: [github.com/resin-io/node-tunnel/issues](https://github.com/resin-io/node-tunnel/issues)
-- Source Code: [github.com/resin-io/node-tunnel](https://github.com/resin-io/node-tunnel)
+- Issue Tracker: [github.com/balena-io/node-tunnel/issues](https://github.com/balena-io/node-tunnel/issues)
+- Source Code: [github.com/balena-io/node-tunnel](https://github.com/balena-io/node-tunnel)
 
 Before submitting a PR, please make sure that you include tests, and that [coffeelint](http://www.coffeelint.org/) runs without any warning:
 

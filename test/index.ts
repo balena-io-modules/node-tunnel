@@ -1,5 +1,5 @@
 /*
-   Copyright 2018 Resin.io
+   Copyright 2018 Balena Ltd.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ describe('tunnel', function() {
 
 		return it('should proxy http requests', function() {
 			const opts = {
-				url: 'https://api.resin.io/ping',
+				url: 'https://api.balena-cloud.com/ping',
 				proxy: `http://localhost:${PORT}`,
 				tunnel: true,
 			};
@@ -90,7 +90,7 @@ describe('tunnel', function() {
 			this.events = [];
 
 			const opts = {
-				url: 'https://api.resin.io/ping',
+				url: 'https://api.balena-cloud.com/ping',
 				proxy: `http://localhost:${PORT}`,
 				tunnel: true,
 			};
@@ -105,7 +105,7 @@ describe('tunnel', function() {
 						.that.equals('connect');
 					expect(this.events[0]).to.have.property('data');
 					expect(this.events[0].data.length).to.equal(3);
-					expect(this.events[0].data[0]).to.equal('api.resin.io');
+					expect(this.events[0].data[0]).to.equal('api.balena-cloud.com');
 					expect(this.events[0].data[1]).to.equal('443');
 					expect(this.events[0].data[2]).to.be.instanceof(Buffer);
 				});
@@ -115,7 +115,7 @@ describe('tunnel', function() {
 			this.events = [];
 
 			const opts = {
-				url: 'https://api.resinosuchdomain.io/ping',
+				url: 'https://api.balenanosuchdomain.error/ping',
 				proxy: `http://localhost:${PORT}`,
 				tunnel: true,
 			};
@@ -149,10 +149,7 @@ describe('tunnel', function() {
 		beforeEach(function(done) {
 			this.tunnel = new nodeTunnel.Tunnel();
 			this.tunnel.connect = (port: number, host: string) => {
-				sock = net.connect(
-					port,
-					host,
-				);
+				sock = net.connect(port, host);
 				return new Promise((resolve, reject) =>
 					sock.on('connect', resolve).on('error', reject),
 				).return(sock);

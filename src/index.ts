@@ -1,5 +1,5 @@
 /*
-   Copyright 2018 Resin.io
+   Copyright 2018 Balena Ltd.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -103,14 +103,14 @@ const connectSocket = ({
 //
 // Middleware are functions of the form (request, controlSocket, head, next).
 export class Request extends http.IncomingMessage {
-	auth?: {
+	public auth?: {
 		username?: string;
 		password?: string;
 	};
 }
 
 export class Tunnel extends EventEmitter {
-	private readonly stack: Array<Middleware> = [];
+	private readonly stack: Middleware[] = [];
 	private readonly server = http.createServer((_req, res) => {
 		res.writeHead(405, { 'Content-Type': 'text/plain' });
 		res.end('Method not allowed');
@@ -145,7 +145,7 @@ export class Tunnel extends EventEmitter {
 		);
 	}
 
-	use(middleware: Middleware) {
+	public use(middleware: Middleware) {
 		this.stack.push(middleware);
 	}
 
@@ -176,29 +176,21 @@ export class Tunnel extends EventEmitter {
 		});
 	}
 
-	connect(
+	protected connect(
 		port: number,
 		host: string,
 		_cltSocket: net.Socket,
 		_req: Request,
 	): Promise<net.Socket> {
-		const socket = net.connect(
-			port,
-			host,
-		);
+		const socket = net.connect(port, host);
 		return new Promise((resolve, reject) => {
 			socket.on('connect', () => resolve(socket));
 			socket.on('error', reject);
 		});
 	}
 
-	listen: (
-		port: number | string,
-		callback?: (err: any, result?: any) => void,
-	) => this = this.server.listen.bind(this.server);
-	close: (callback?: (error?: Error) => void) => this = this.server.close.bind(
-		this.server,
-	);
+	public listen = this.server.listen.bind(this.server);
+	public close = this.server.close.bind(this.server);
 }
 
 // Proxy authorization middleware for http tunnel.
