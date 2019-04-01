@@ -6,11 +6,11 @@
   "types": "lib/src/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git@github.com:resin-io/node-tunnel"
+    "url": "git@github.com:balena-io/node-tunnel"
   },
   "author": "Aleksis Brezas <abresas@resin.io>",
   "contributors": [
-    "Will Boyce <will@resin.io>"
+    "Will Boyce <will@balena.io>"
   ],
   "scripts": {
     "lint": "resin-lint --typescript src/ test/ typings/",
