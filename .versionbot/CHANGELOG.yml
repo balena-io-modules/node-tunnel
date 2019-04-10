@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'rename: Move to `balena-io-modules` org'
+      hash: 5aaab516f26d99b907ccdec162f96cb3da60efa7
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 2.1.2
+  date: 2019-04-01T11:39:07.428Z
+- commits:
     - subject: 'rename: s/resin/balena'
       hash: fec6eb56329c54bb1b217f5ef0aa12f477e9f879
       body: ''
