@@ -15,7 +15,7 @@
 */
 import basicAuthParser = require('basic-auth-parser');
 import * as Promise from 'bluebird';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import * as http from 'http';
 import * as net from 'net';
 import * as url from 'url';
