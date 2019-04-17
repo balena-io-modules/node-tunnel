@@ -1,4 +1,16 @@
 - commits:
+    - subject: Switch to `eventemitter3.EventEmitter` from the stdlib EventEmitter
+      hash: 87ab668c5f16456e8d71f625c3fab507ffc8c161
+      body: ''
+      footer:
+        Change-type: major
+        change-type: major
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 3.0.0
+  date: 2019-04-17T10:19:39.204Z
+- commits:
     - subject: 'rename: Move to `balena-io-modules` org'
       hash: 5aaab516f26d99b907ccdec162f96cb3da60efa7
       body: ''
