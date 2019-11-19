@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import basicAuthParser = require('basic-auth-parser');
+import * as basicAuthParser from 'basic-auth-parser';
 import * as Promise from 'bluebird';
 import { EventEmitter } from 'eventemitter3';
 import * as http from 'http';
@@ -103,10 +103,7 @@ const connectSocket = ({
 //
 // Middleware are functions of the form (request, controlSocket, head, next).
 export class Request extends http.IncomingMessage {
-	public auth?: {
-		username?: string;
-		password?: string;
-	};
+	public auth?: ReturnType<typeof basicAuthParser>;
 }
 
 export class Tunnel extends EventEmitter {
