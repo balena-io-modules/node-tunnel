@@ -28,11 +28,9 @@
   "license": "Apache-2.0",
   "dependencies": {
     "basic-auth-parser": "^0.0.2",
-    "bluebird": "^3.7.1",
     "eventemitter3": "^4.0.0"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.29",
     "@types/chai": "^4.2.5",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.9",
