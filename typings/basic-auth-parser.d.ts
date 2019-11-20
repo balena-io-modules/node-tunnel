@@ -20,6 +20,6 @@ declare module 'basic-auth-parser' {
 		password?: string;
 	}
 
-	const parser: (auth: string | string[]) => BasicAuth;
+	const parser: (auth: string) => BasicAuth;
 	export = parser;
 }

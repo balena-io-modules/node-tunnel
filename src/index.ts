@@ -13,8 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import basicAuthParser = require('basic-auth-parser');
-import * as Promise from 'bluebird';
+import * as basicAuthParser from 'basic-auth-parser';
 import { EventEmitter } from 'eventemitter3';
 import * as http from 'http';
 import * as net from 'net';
@@ -47,52 +46,44 @@ interface ConnectSocketOptions {
 
 // Connect an http socket to another tcp server.
 // Based on tunneling proxy code from https://nodejs.org/api/http.html
-const connectSocket = ({
+const connectSocket = async ({
 	cltSocket,
 	hostname,
 	port,
 	head,
 	connect,
 	req,
-}: ConnectSocketOptions) =>
-	connect(
-		port,
-		hostname,
-		cltSocket,
-		req,
-	)
-		.then(srvSocket => {
-			cltSocket.write(
-				`HTTP/1.0 200 Connection Established\r\nProxy-agent: balena-io/node-tunnel (v${version})\r\n\r\n`,
-			);
-			srvSocket.write(head);
-			srvSocket.pipe(
-				cltSocket,
-				{ end: false },
-			);
-			cltSocket.pipe(
-				srvSocket,
-				{ end: false },
-			);
+}: ConnectSocketOptions) => {
+	try {
+		const srvSocket = await connect(port, hostname, cltSocket, req);
+		cltSocket.write(
+			`HTTP/1.0 200 Connection Established\r\nProxy-agent: balena-io/node-tunnel (v${version})\r\n\r\n`,
+		);
+		srvSocket.write(head);
+		srvSocket.pipe(cltSocket, { end: false });
+		cltSocket.pipe(srvSocket, { end: false });
 
-			return Promise.fromCallback(cb => {
-				cltSocket.on('error', cb);
-				srvSocket.on('error', cb);
-				cltSocket.on('end', cb);
-				srvSocket.on('end', cb);
-			}).finally(() => {
-				srvSocket.destroy();
-				cltSocket.destroy();
+		try {
+			await new Promise((resolve, reject) => {
+				cltSocket.on('error', reject);
+				srvSocket.on('error', reject);
+				cltSocket.on('end', resolve);
+				srvSocket.on('end', resolve);
 			});
-		})
-		.tapCatch(() => {
-			if (cltSocket.writable) {
-				cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n');
-			}
-			if (!cltSocket.destroyed) {
-				cltSocket.destroy();
-			}
-		});
+		} finally {
+			srvSocket.destroy();
+			cltSocket.destroy();
+		}
+	} catch (err) {
+		if (cltSocket.writable) {
+			cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n');
+		}
+		if (!cltSocket.destroyed) {
+			cltSocket.destroy();
+		}
+		throw err;
+	}
+};
 
 // Create an http CONNECT tunneling proxy
 // Expressjs-like middleware can be used to change destination (by modifying req.url)
@@ -103,10 +94,7 @@ const connectSocket = ({
 //
 // Middleware are functions of the form (request, controlSocket, head, next).
 export class Request extends http.IncomingMessage {
-	public auth?: {
-		username?: string;
-		password?: string;
-	};
+	public auth?: ReturnType<typeof basicAuthParser>;
 }
 
 export class Tunnel extends EventEmitter {
@@ -122,26 +110,27 @@ export class Tunnel extends EventEmitter {
 		this.use(basicAuth);
 		this.server.on(
 			'connect',
-			(req: Request, cltSocket: net.Socket, head: Buffer) =>
-				this.handleMiddleware(req, cltSocket, head)
-					.then(() => {
-						const { hostname, port } = url.parse(`http://${req.url}`);
-						if (hostname == null || port == null) {
-							throw new Error('Invalid Request: Hostname or Port missing');
-						}
-						return connectSocket({
-							cltSocket,
-							hostname,
-							port: parseInt(port, 10),
-							head,
-							connect: this.connect,
-							req,
-						}).then(() => this.emit('connect', hostname, port, head));
-					})
-					.catch((err: Error) => {
-						this.emit('error', err);
-						cltSocket.destroy();
-					}),
+			async (req: Request, cltSocket: net.Socket, head: Buffer) => {
+				try {
+					await this.handleMiddleware(req, cltSocket, head);
+					const { hostname, port } = url.parse(`http://${req.url}`);
+					if (hostname == null || port == null) {
+						throw new Error('Invalid Request: Hostname or Port missing');
+					}
+					await connectSocket({
+						cltSocket,
+						hostname,
+						port: parseInt(port, 10),
+						head,
+						connect: this.connect,
+						req,
+					});
+					this.emit('connect', hostname, port, head);
+				} catch (err) {
+					this.emit('error', err);
+					cltSocket.destroy();
+				}
+			},
 		);
 	}
 
@@ -149,12 +138,12 @@ export class Tunnel extends EventEmitter {
 		this.stack.push(middleware);
 	}
 
-	private handleMiddleware(
+	private async handleMiddleware(
 		req: Request,
 		cltSocket: net.Socket,
 		head: Buffer,
-	): Promise<void> {
-		return new Promise((resolve, reject) => {
+	) {
+		await new Promise((resolve, reject) => {
 			let index = 0;
 
 			const next = (err?: Error) => {
@@ -176,14 +165,14 @@ export class Tunnel extends EventEmitter {
 		});
 	}
 
-	protected connect(
+	protected async connect(
 		port: number,
 		host: string,
 		_cltSocket: net.Socket,
 		_req: Request,
 	): Promise<net.Socket> {
-		const socket = net.connect(port, host);
 		return new Promise((resolve, reject) => {
+			const socket = net.connect(port, host);
 			socket.on('connect', () => resolve(socket));
 			socket.on('error', reject);
 		});
