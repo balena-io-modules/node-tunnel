@@ -1,4 +1,25 @@
 - commits:
+    - subject: convert promise chains to async/await
+      hash: 9884b5555932b5fb4cb754716825723831b79b53
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: update deps and target node12/es2019
+      hash: 5064d66eb86411589de3846b689fafa27b542254
+      body: ''
+      footer:
+        Change-type: major
+        change-type: major
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 4.0.0
+  date: 2019-11-19T14:42:08.941Z
+- commits:
     - subject: Switch to `eventemitter3.EventEmitter` from the stdlib EventEmitter
       hash: 87ab668c5f16456e8d71f625c3fab507ffc8c161
       body: ''
