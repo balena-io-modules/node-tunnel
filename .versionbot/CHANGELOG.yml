@@ -1,4 +1,14 @@
 - commits:
+    - subject: Delete .github directory
+      hash: 1776efbdc4bf897ed0feaed4554065a5c99337af
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: dfunckt
+  version: 4.0.1
+  date: 2021-07-01T05:05:07.293Z
+- commits:
     - subject: convert promise chains to async/await
       hash: 9884b5555932b5fb4cb754716825723831b79b53
       body: ''
