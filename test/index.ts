@@ -13,14 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as Promise from 'bluebird';
 import { expect } from 'chai';
-import * as net from 'net';
-import * as rp from 'request-promise';
-
-Promise.config({
-	longStackTraces: true,
-});
+import net from 'net';
+import rp from 'request-promise';
 
 const request = rp.defaults({
 	resolveWithFullResponse: true,
@@ -31,50 +26,50 @@ import * as nodeTunnel from '../src/index';
 
 const PORT = '3128';
 
-describe('tunnel', function() {
-	describe('proxy', function() {
+describe('tunnel', function () {
+	describe('proxy', function () {
 		// Sometimes connection takes a few seconds to be established and tests fail,
 		// so set a generous timeout here.
 		this.timeout(10000);
-		before(function(done) {
+		before(function (done) {
 			this.tunnel = new nodeTunnel.Tunnel();
 			return this.tunnel.listen(PORT, done);
 		});
 
-		after(function() {
+		after(function () {
 			return this.tunnel.close();
 		});
 
-		return it('should proxy http requests', function() {
+		it('should proxy http requests', async () => {
 			const opts = {
 				url: 'https://api.balena-cloud.com/ping',
 				proxy: `http://localhost:${PORT}`,
 				tunnel: true,
 			};
 
-			return request.get(opts).then(res => {
+			return request.get(opts).then((res) => {
 				expect(res.statusCode).to.equal(200);
 				expect(res.body).to.equal('OK');
 			});
 		});
 	});
 
-	describe('events', function() {
+	describe('events', function () {
 		// Some systems have huge dns lookup timeout, so set a timeout of 1 minute.
 		// I suggest you have options timeout:1 on /etc/resolv.conf so this test runs faster.
 		this.timeout(60000);
 
-		before(function(done) {
+		let events: any[] = [];
+		before(function (done) {
 			this.tunnel = new nodeTunnel.Tunnel();
-			this.events = [];
 			this.tunnel.on('connect', (...args: any[]) =>
-				this.events.push({
+				events.push({
 					name: 'connect',
 					data: args,
 				}),
 			);
 			this.tunnel.on('error', (...args: any[]) =>
-				this.events.push({
+				events.push({
 					name: 'error',
 					data: args,
 				}),
@@ -82,12 +77,12 @@ describe('tunnel', function() {
 			return this.tunnel.listen(PORT, done);
 		});
 
-		after(function() {
+		after(function () {
 			return this.tunnel.close();
 		});
 
-		it('should generate connect event on success', function() {
-			this.events = [];
+		it('should generate connect event on success', async () => {
+			events = [];
 
 			const opts = {
 				url: 'https://api.balena-cloud.com/ping',
@@ -99,20 +94,18 @@ describe('tunnel', function() {
 				.promise()
 				.delay(500)
 				.then(() => {
-					expect(this.events.length).to.equal(1);
-					expect(this.events[0])
-						.to.have.property('name')
-						.that.equals('connect');
-					expect(this.events[0]).to.have.property('data');
-					expect(this.events[0].data.length).to.equal(3);
-					expect(this.events[0].data[0]).to.equal('api.balena-cloud.com');
-					expect(this.events[0].data[1]).to.equal('443');
-					expect(this.events[0].data[2]).to.be.instanceof(Buffer);
+					expect(events.length).to.equal(1);
+					expect(events[0]).to.have.property('name').that.equals('connect');
+					expect(events[0]).to.have.property('data');
+					expect(events[0].data.length).to.equal(3);
+					expect(events[0].data[0]).to.equal('api.balena-cloud.com');
+					expect(events[0].data[1]).to.equal('443');
+					expect(events[0].data[2]).to.be.instanceof(Buffer);
 				});
 		});
 
-		return it('should generate connect and error events on error', function() {
-			this.events = [];
+		it('should generate connect and error events on error', async () => {
+			events = [];
 
 			const opts = {
 				url: 'https://api.balenanosuchdomain.error/ping',
@@ -121,18 +114,16 @@ describe('tunnel', function() {
 			};
 
 			return request(opts).catch(() => {
-				expect(this.events.length).to.equal(1);
-				expect(this.events[0])
-					.to.have.property('name')
-					.that.equals('error');
-				expect(this.events[0]).to.have.property('data');
-				expect(this.events[0].data.length).to.equal(1);
-				expect(this.events[0].data[0]).to.be.instanceof(Error);
+				expect(events.length).to.equal(1);
+				expect(events[0]).to.have.property('name').that.equals('error');
+				expect(events[0]).to.have.property('data');
+				expect(events[0].data.length).to.equal(1);
+				expect(events[0].data[0]).to.be.instanceof(Error);
 			});
 		});
 	});
 
-	return describe('half-close connections between tunnel and server', function() {
+	describe('half-close connections between tunnel and server', function () {
 		// The test server listening on 8080 does not send a FIN packet back when it receives
 		// one from VPN tunnel (allowHalfOpen setting). The VPN tunnel should anyway close the
 		// connection fully from its side, or else the connection it will remain bound, indefinitely,
@@ -146,41 +137,55 @@ describe('tunnel', function() {
 		const serverPort = 8080;
 		const connectStr = `CONNECT localhost:${serverPort} HTTP/1.0\r\nHost: localhost:${serverPort}\r\n\r\n`;
 
-		beforeEach(function(done) {
+		beforeEach(function (done) {
 			this.tunnel = new nodeTunnel.Tunnel();
-			this.tunnel.connect = (port: number, host: string) => {
-				sock = net.connect(port, host);
-				return new Promise((resolve, reject) =>
-					sock.on('connect', resolve).on('error', reject),
-				).return(sock);
+			this.tunnel.connect = async (
+				port: number,
+				host: string,
+			): Promise<net.Socket> => {
+				return new Promise<net.Socket>((resolve, reject) => {
+					sock = net.connect(port, host);
+					sock.on('connect', () => {
+						resolve(sock);
+					});
+					sock.on('error', (err) => {
+						reject(err);
+					});
+				});
 			};
 			this.tunnel.listen(PORT, done);
 		});
 
-		afterEach(function() {
+		afterEach(function () {
 			this.tunnel.close();
 			this.server.close();
 		});
 
-		it('should be fully closed when client sends FIN', function(done) {
-			this.server = net.createServer({ allowHalfOpen: true }, () =>
+		it('should be fully closed when client sends FIN', function (done) {
+			this.server = net.createServer({ allowHalfOpen: true }, () => {
 				// tunnel <-> server connection properly closed from the tunnel side
-				sock.on('close', done),
-			);
+				sock.on('close', () => {
+					done();
+				});
+			});
 
 			this.server.listen(serverPort, () => {
-				net.createConnection(PORT, function(this: net.Socket) {
-					this.write(connectStr);
-					this.on('data', () =>
+				net.createConnection(PORT, function (this: net.Socket) {
+					this.write(connectStr, (err) => {
+						if (err) {
+							done(err);
+						}
+					});
+					this.on('data', () => {
 						// send FIN to tunnel server
-						this.end(),
-					);
+						this.end();
+					});
 				});
 			});
 		});
 
-		it('should be fully closed when server sends FIN', function(done) {
-			this.server = net.createServer({ allowHalfOpen: true }, socket => {
+		it('should be fully closed when server sends FIN', function (done) {
+			this.server = net.createServer({ allowHalfOpen: true }, (socket) => {
 				// tunnel <-> server connection properly closed from the tunnel side
 				sock.on('close', done);
 				// send FIN to tunnel server
@@ -188,7 +193,7 @@ describe('tunnel', function() {
 			});
 
 			this.server.listen(serverPort, () =>
-				net.createConnection(PORT, function(this: net.Socket) {
+				net.createConnection(PORT, function (this: net.Socket) {
 					this.write(connectStr);
 				}),
 			);
