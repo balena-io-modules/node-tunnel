@@ -1,27 +1,26 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"outDir": "lib",
-		"target": "ES2019",
-		"declaration": true,
-		"sourceMap": true,
-		"removeComments": true,
+		"module": "Node16",
 		"strict": true,
-		"noErrorTruncation": true,
+		"strictFunctionTypes": false,
+		"noImplicitThis": false,
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
+		"outDir": "lib",
 		"preserveConstEnums": true,
-		"allowJs": false,
-		"typeRoots" : ["./node_modules/@types", "./typings"],
-		"resolveJsonModule": true
+		"removeComments": true,
+		"rootDir": "src",
+		"sourceMap": true,
+		"target": "es2022",
+		"declaration": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+		"allowJs": true,
+		"checkJs": true
 	},
 	"include": [
-		"src/**/*.ts",
-		"test/**/*.ts",
+		"src/**/*",
 		"typings/**/*.d.ts"
-	],
-	"exclude": [
-		"node_modules"
 	]
 }
 

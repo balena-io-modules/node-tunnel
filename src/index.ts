@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import * as basicAuthParser from 'basic-auth-parser';
+import basicAuthParser from 'basic-auth-parser';
 import { EventEmitter } from 'eventemitter3';
 import * as http from 'http';
 import * as net from 'net';
@@ -153,11 +153,15 @@ export class Tunnel extends EventEmitter {
 				} else if (middleware != null) {
 					try {
 						middleware(req, cltSocket, head, next);
-					} catch (err) {
-						reject(err);
+					} catch (middlewareErr) {
+						reject(
+							new Error(
+								`Failed to execute tunnel middleware: ${middlewareErr}`,
+							),
+						);
 					}
 				} else {
-					resolve();
+					resolve(true);
 				}
 			};
 
@@ -165,16 +169,15 @@ export class Tunnel extends EventEmitter {
 		});
 	}
 
-	protected async connect(
-		port: number,
-		host: string,
-		_cltSocket: net.Socket,
-		_req: Request,
-	): Promise<net.Socket> {
-		return new Promise((resolve, reject) => {
+	protected async connect(port: number, host: string): Promise<net.Socket> {
+		return new Promise<net.Socket>((resolve, reject) => {
 			const socket = net.connect(port, host);
-			socket.on('connect', () => resolve(socket));
-			socket.on('error', reject);
+			socket.on('connect', () => {
+				resolve(socket);
+			});
+			socket.on('error', (err) => {
+				reject(err);
+			});
 		});
 	}
 
@@ -188,5 +191,5 @@ export const basicAuth: Middleware = (req, _cltSocket, _head, next) => {
 	if (proxyAuth != null) {
 		req.auth = basicAuthParser(proxyAuth);
 	}
-	return next();
+	next();
 };
