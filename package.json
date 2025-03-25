@@ -32,7 +32,7 @@
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
-    "@balena/lint": "^8.2.4",
+    "@balena/lint": "^9.0.0",
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.7",
     "@types/node": "^20.14.11",
