@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @balena/lint to v9
+      hash: 0a742e4188ab2915b7c7010184484acfaedbe697
+      body: |
+        Update @balena/lint from 8.2.8 to 9.1.4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 4.0.3
+  title: ""
+  date: 2025-03-25T17:09:19.413Z
+- commits:
     - subject: Update dependencies and switch to Flowzone
       hash: 6dad57baf131b030d5a056d26d6b667d651e8fe6
       body: ""
