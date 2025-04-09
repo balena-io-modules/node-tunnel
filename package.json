@@ -2,8 +2,8 @@
   "name": "node-tunnel",
   "version": "4.0.4",
   "description": "Http tunneling proxy",
-  "main": "lib/src/index.js",
-  "types": "lib/src/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git@github.com:balena-io-modules/node-tunnel"
