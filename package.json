@@ -1,6 +1,6 @@
 {
   "name": "node-tunnel",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "description": "Http tunneling proxy",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -56,6 +56,6 @@
     "recursive": true
   },
   "versionist": {
-    "publishedAt": "2025-04-02T14:05:14.392Z"
+    "publishedAt": "2025-04-10T07:06:23.721Z"
   }
 }

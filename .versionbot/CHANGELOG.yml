@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix main/types entry points
+      hash: 0a486ce75f2f5b1b5fd834a6e07b3dfd346e1a30
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 4.0.5
+  title: ""
+  date: 2025-04-10T07:06:23.653Z
+- commits:
     - subject: Update dependency mocha to v11
       hash: 3f88a638bc5c6ae0c80a23d73e3f81b96b94af91
       body: |
