@@ -1,4 +1,24 @@
 - commits:
+    - subject: Change the build output folder to "build"
+      hash: acc983ace3c28e5642094bc169d3115ea8aef0f0
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Thodoris Greasidis
+      nested: []
+    - subject: Reduce the published files
+      hash: 392f06691a754bf23637f462af9088462b51b2c4
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Thodoris Greasidis
+      nested: []
+  version: 4.0.7
+  title: ""
+  date: 2025-04-10T12:30:18.478Z
+- commits:
     - subject: Fix signature for `connect` to enable downstream extension
       hash: 409a4c469d9681f782a0cf89b6887e8312d6bda9
       body: ""
