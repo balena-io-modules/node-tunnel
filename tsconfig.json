@@ -6,7 +6,7 @@
 		"noImplicitThis": false,
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
-		"outDir": "lib",
+		"outDir": "build",
 		"preserveConstEnums": true,
 		"removeComments": true,
 		"rootDir": "src",
