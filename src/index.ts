@@ -169,7 +169,14 @@ export class Tunnel extends EventEmitter {
 		});
 	}
 
-	protected async connect(port: number, host: string): Promise<net.Socket> {
+	protected async connect(
+		port: number,
+		host: string,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- These are placeholders to match the `NetConnectPromise` signature for downstream extension
+		_cltSocket: net.Socket,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars -- These are placeholders to match the `NetConnectPromise` signature for downstream extension
+		_req: Request,
+	): Promise<net.Socket> {
 		return new Promise<net.Socket>((resolve, reject) => {
 			const socket = net.connect(port, host);
 			socket.on('connect', () => {

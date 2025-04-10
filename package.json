@@ -22,7 +22,7 @@
     "lint-fix": "balena-lint -t tsconfig.dev.json --fix src test typings",
     "build": "tsc",
     "pretest": "npm run build",
-    "test": "TS_NODE_FILES=true mocha test/index.ts",
+    "test": "mocha test/index.ts",
     "posttest": "npm run lint",
     "prepare": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module && npm run build"
   },
@@ -32,19 +32,19 @@
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
-    "@balena/lint": "^9.0.0",
-    "@types/chai": "^4.3.16",
-    "@types/mocha": "^10.0.7",
-    "@types/node": "^20.14.11",
+    "@balena/lint": "^9.2.2",
+    "@types/chai": "^4.3.20",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.17.30",
     "@types/request-promise": "^4.1.51",
-    "chai": "^4.4.1",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.7",
-    "mocha": "^11.0.0",
+    "chai": "^4.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "mocha": "^11.2.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.8.3"
   },
   "lint-staged": {
     "*.ts": [
