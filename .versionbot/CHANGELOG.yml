@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update npm to v11
+      hash: f4dab65eb98be1788bdbcb004d81a3f9c0f760da
+      body: |
+        Update npm from 10.9.2 to 11.2.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 4.0.8
+  title: ""
+  date: 2025-04-10T15:21:45.809Z
+- commits:
     - subject: Change the build output folder to "build"
       hash: acc983ace3c28e5642094bc169d3115ea8aef0f0
       body: ""
