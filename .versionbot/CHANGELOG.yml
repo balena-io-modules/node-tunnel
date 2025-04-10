@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix signature for `connect` to enable downstream extension
+      hash: 409a4c469d9681f782a0cf89b6887e8312d6bda9
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 4.0.6
+  title: ""
+  date: 2025-04-10T12:23:15.513Z
+- commits:
     - subject: Fix main/types entry points
       hash: 0a486ce75f2f5b1b5fd834a6e07b3dfd346e1a30
       body: ""
