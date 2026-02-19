@@ -41,7 +41,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.17.30",
     "@types/request-promise": "^4.1.51",
-    "chai": "^4.5.0",
+    "chai": "^6.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
     "mocha": "^11.2.0",
