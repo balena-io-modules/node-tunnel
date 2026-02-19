@@ -5,6 +5,11 @@ on:
     types: [opened, synchronize, closed]
     branches: [main, master]
 
+permissions:
+  id-token: write
+  contents: read
+  packages: read
+
 jobs:
   flowzone:
     name: Flowzone
